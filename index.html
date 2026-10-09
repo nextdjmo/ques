@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Game trước hôn nhân</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fff8f3;--card:#fff;--tx:#2b2220;--mu:#7a6a64;--ac:#d6584a;--ln:#ecd9d0;--ok:#2f8f5b;--no:#c9772b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1715;--card:#2a211e;--tx:#f3e8e3;--mu:#b5a49d;--ac:#ec7a6c;--ln:#463833;--ok:#5cc58b;--no:#e8a259}}
+:root[data-theme="dark"]{--bg:#1d1715;--card:#2a211e;--tx:#f3e8e3;--mu:#b5a49d;--ac:#ec7a6c;--ln:#463833;--ok:#5cc58b;--no:#e8a259}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:560px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:24px;margin:8px 0}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:18px;margin:14px 0}
+.mu{color:var(--mu);font-size:14px}
+input{width:100%;padding:12px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx);font-size:16px;margin:6px 0 12px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:12px;padding:12px 20px;font-weight:600;width:100%}
+.opt{display:flex;gap:10px;width:100%;text-align:left;background:var(--bg);color:var(--tx);border:1px solid var(--ln);border-radius:12px;padding:12px;margin:8px 0}
+.opt:active,.opt:hover{border-color:var(--ac)}
+.opt b{color:var(--ac);min-width:20px}
+.bar{height:6px;background:var(--ln);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ac)}
+.tag{display:inline-block;font-size:12px;background:var(--ln);border-radius:20px;padding:2px 10px;margin-bottom:8px}
+.row{border-top:1px solid var(--ln);padding:10px 0;font-size:15px}
+.same{color:var(--ok)}.diff{color:var(--no)}
+.big{font-size:40px;font-weight:700;color:var(--ac);text-align:center}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+var Q=[
+["Tiền bạc","Sau cưới, lương được quản lý thế nào?",["Gộp chung, một người giữ","Gộp chung, cả hai cùng quản","Mỗi người giữ riêng, góp chi tiêu chung","Chưa nghĩ, cần bàn"]],
+["Tiền bạc","Gửi tiền hỗ trợ bố mẹ hai bên?",["Mỗi người lo cho bố mẹ mình","Cùng bàn một mức cố định hằng tháng","Tùy hoàn cảnh, ai cần thì giúp","Chưa nghĩ, cần bàn"]],
+["Tiền bạc","Khoản mua sắm hoặc nợ lớn?",["Phải bàn và cả hai đồng ý","Báo cho nhau biết là đủ","Tự quyết nếu dùng tiền riêng","Cần bàn thêm"]],
+["Con cái","Chuyện có con?",["Muốn sớm, trong 1-2 năm đầu","Sau 3-5 năm khi đã ổn định","Muốn nhưng chưa định thời gian","Không muốn có con"]],
+["Con cái","Ai chăm con nhỏ?",["Một người nghỉ làm ở nhà","Hai người chia ca, thay phiên","Nhờ ông bà","Thuê người hoặc gửi trẻ"]],
+["Nơi ở","Sau cưới ở đâu?",["Ở riêng","Ở chung với bố mẹ một bên","Ở gần bố mẹ nhưng ở riêng","Tùy công việc, chưa biết"]],
+["Gia đình","Bố mẹ góp ý vào cuộc sống vợ chồng?",["Góp ý được, quyết định là của hai vợ chồng","Tôn trọng ý bố mẹ nhiều","Hạn chế tối đa","Cần bàn thêm"]],
+["Gia đình","Tết về bên nào?",["Luân phiên mỗi năm","Mồng 1 bên nội, mồng 2 bên ngoại","Bên nào gần hơn","Chưa bàn"]],
+["Việc nhà","Chia việc nhà thế nào?",["Chia đều theo đầu việc","Ai rảnh thì làm","Một người chính, người kia hỗ trợ","Thuê giúp việc"]],
+["Công việc","Một người muốn đổi việc hoặc chuyển nơi sống?",["Bàn kỹ, cả hai đồng ý","Ủng hộ miễn báo trước","Ưu tiên công việc của người thu nhập cao hơn","Tùy trường hợp"]],
+["Mâu thuẫn","Khi giận, mình thường?",["Nói ngay để giải quyết","Im lặng vài giờ rồi mới nói","Nói gay gắt cho hả","Né tránh, để tự hết"]],
+["Mâu thuẫn","Khi bế tắc nhiều lần?",["Đi tư vấn hôn nhân","Nhờ người lớn đáng tin","Tự giải quyết, không nhờ ai","Tạm xa nhau để bình tĩnh"]],
+["Đám cưới","Đám cưới mong muốn?",["Nhỏ gọn, tiết kiệm","Vừa phải, đủ họ hàng bạn bè","Lớn, theo đúng truyền thống","Chỉ đăng ký, không tổ chức"]],
+["Đám cưới","Chi phí đám cưới?",["Hai bên chia đều","Nhà trai lo phần lớn","Hai vợ chồng tự lo","Chưa biết"]],
+["Tài sản","Tài sản và đứng tên?",["Tất cả là của chung","Tài sản có trước hôn nhân vẫn là riêng","Cần thỏa thuận rõ bằng văn bản","Chưa nghĩ"]],
+["Riêng tư","Điện thoại và quyền riêng tư?",["Không có bí mật, mở điện thoại được","Có riêng tư nhưng không giấu chuyện quan trọng","Cần không gian riêng rõ ràng","Cần bàn thêm"]],
+["Ranh giới","Nhắn tin hoặc gặp riêng người khác giới?",["Không nên","Được nếu cho người kia biết","Bình thường như bạn bè","Cần bàn chi tiết"]],
+["Thời gian","Thời gian rảnh cuối tuần?",["Chủ yếu dành cho gia đình","Cân bằng, mỗi người có thời gian riêng","Mỗi người tự do làm điều mình thích","Tùy giai đoạn"]],
+["Biến cố","Khi mất việc hoặc có người bệnh nặng?",["Cùng gánh, cắt giảm chi tiêu","Dùng quỹ dự phòng đã lập sẵn","Nhờ họ hàng hỗ trợ","Chưa nghĩ tới"]],
+["Hôn nhân","Quan điểm về ly hôn?",["Lựa chọn cuối cùng, cố hết sức trước","Có thể nếu không còn hạnh phúc","Không bao giờ nên ly hôn","Cần bàn thêm"]],
+["Tình cảm","Điều làm mình thấy được yêu nhất?",["Lời nói yêu thương","Thời gian bên nhau","Hành động giúp đỡ","Quà hoặc sự quan tâm nhỏ"]],
+["Chuyện khó nói","Chuyện sức khỏe, nợ nần, quá khứ?",["Nói hết trước khi cưới","Nói những gì ảnh hưởng đến đời sống chung","Nói khi người kia hỏi","Cần bàn thêm"]]
+];
+var L="ABCD",S={n:["",""],a:[[],[]],p:0,i:0,v:"intro"};
+var app=document.getElementById("app");
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function nm(k){return S.n[k]||("Người "+(k+1))}
+function intro(){
+app.innerHTML='<h1>Game trước hôn nhân</h1><p class="mu">22 câu chọn A, B, C hoặc D và 1 câu tự điền, mỗi người trả lời theo đúng suy nghĩ của mình. Chọn xong sẽ so sánh để thấy chỗ nào giống, chỗ nào cần nói chuyện thêm. Không có đáp án đúng hay sai.</p><div class="card"><label class="mu">Tên người thứ nhất</label><input id="n0" maxlength="20"><label class="mu">Tên người thứ hai</label><input id="n1" maxlength="20"><button class="btn" id="go">Bắt đầu</button></div><p class="mu">Chơi lần lượt trên một máy. Người thứ hai không nhìn khi người thứ nhất chọn.</p>';
+document.getElementById("go").onclick=function(){S.n=[document.getElementById("n0").value.trim(),document.getElementById("n1").value.trim()];S.p=0;S.i=0;S.v="play";render()}
+}
+function play(){
+var q=Q[S.i],pc=Math.round(S.i/Q.length*100);
+var h='<div class="mu">Lượt của <b>'+esc(nm(S.p))+'</b> · câu '+(S.i+1)+'/'+Q.length+'</div><div class="bar"><i style="width:'+pc+'%"></i></div><div class="card"><span class="tag">'+q[0]+'</span><div style="font-weight:600;margin-bottom:6px">'+q[1]+'</div>';
+q[2].forEach(function(t,k){h+='<button class="opt" data-k="'+k+'"><b>'+L[k]+'</b><span>'+t+'</span></button>'});
+h+='</div>';
+app.innerHTML=h;
+Array.prototype.forEach.call(app.querySelectorAll(".opt"),function(b){b.onclick=function(){
+S.a[S.p][S.i]=+b.getAttribute("data-k");S.i++;
+if(S.i>=Q.length){S.v="free"}
+render()}})
+}
+function free(){S.t=S.t||["",""];app.innerHTML='<div class="mu">Câu cuối · lượt của <b>'+esc(nm(S.p))+'</b></div><div class="card"><span class="tag">Tự điền</span><div style="font-weight:600;margin-bottom:6px">Điều bạn lo lắng nhất về hôn nhân, hoặc muốn nói với người kia mà chưa dám nói, là gì?</div><textarea id="ft" rows="5" maxlength="500" style="width:100%;padding:12px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit"></textarea></div><button class="btn" id="fd">Xong</button>';document.getElementById("fd").onclick=function(){S.t[S.p]=document.getElementById("ft").value.trim();S.v=S.p==0?"pass":"result";render()}}
+function pass(){
+app.innerHTML='<h1>Xong lượt của '+esc(nm(0))+'</h1><div class="card"><p>Đưa máy cho <b>'+esc(nm(1))+'</b>. Đừng cho người kia xem câu trả lời nhé.</p><button class="btn" id="nx">Tới lượt '+esc(nm(1))+'</button></div>';
+document.getElementById("nx").onclick=function(){S.p=1;S.i=0;S.v="play";render()}
+}
+function result(){
+var same=0,d="",s="";
+Q.forEach(function(q,i){
+var x=S.a[0][i],y=S.a[1][i];
+if(x===y){same++;s+='<div class="row"><span class="mu">'+q[0]+'</span> · '+q[1]+'<br><span class="same">Giống nhau: </span>'+lab(x,q)+'</div>'}
+else{d+='<div class="row"><span class="mu">'+q[0]+'</span> · '+q[1]+'<br>'+esc(nm(0))+': <b>'+L[x]+'</b>. '+q[2][x]+'<br>'+esc(nm(1))+': <b>'+L[y]+'</b>. '+q[2][y]+'</div>'}
+});
+var pct=Math.round(same/Q.length*100);
+app.innerHTML='<h1>Kết quả</h1><div class="card"><div class="big">'+pct+'%</div><p class="mu" style="text-align:center">Giống nhau '+same+'/'+Q.length+' câu</p><p>Khác nhau không có nghĩa là không hợp. Đó là những chỗ cần ngồi xuống nói chuyện thật kỹ, hỏi nhau vì sao mình chọn vậy. Câu nào cả hai chọn "cần bàn" (đáp án D) cũng nên bàn.</p></div>'
++(d?'<h3 class="diff">Cần nói chuyện ('+(Q.length-same)+')</h3><div class="card">'+d+'</div>':'')
++(s?'<h3 class="same">Giống nhau ('+same+')</h3><div class="card">'+s+'</div>':'')
++'<h3>Câu tự điền</h3><div class="card" style="white-space:pre-wrap"><b>'+esc(nm(0))+':</b>\n'+(esc(S.t[0])||'<span class="mu">(để trống)</span>')+'\n\n<b>'+esc(nm(1))+':</b>\n'+(esc(S.t[1])||'<span class="mu">(để trống)</span>')+'</div><button class="btn" id="rs">Chơi lại</button>';
+document.getElementById("rs").onclick=function(){S={n:["",""],a:[[],[]],p:0,i:0,v:"intro"};render()}
+}
+function render(){window.scrollTo(0,0);if(S.v=="intro")intro();else if(S.v=="play")play();else if(S.v=="free")free();else if(S.v=="pass")pass();else result()}
+function enc(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+function dec(s){try{var o=JSON.parse(decodeURIComponent(escape(atob(String(s).replace(/\s+/g,"")))));if(o&&o.a&&o.a.length==Q.length)return o}catch(e){}return null}
+function ta(id,ro){return '<textarea id="'+id+'" rows="4"'+(ro?' readonly':'')+' style="width:100%;padding:12px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx);font:12px/1.4 monospace;word-break:break-all"></textarea>'}
+function intro(){
+app.innerHTML='<h1>Game trước hôn nhân</h1><p class="mu">22 câu, mỗi câu chọn A, B, C, D hoặc tự viết đáp án của riêng bạn, và 1 câu tự điền ở cuối. Mỗi người chơi riêng trên máy của mình, xong thì gửi mã kết quả cho nhau để so sánh. Không có đáp án đúng hay sai.</p><div class="card"><label class="mu">Tên của bạn</label><input id="n0" maxlength="20"><button class="btn" id="go">Bắt đầu</button></div><button class="opt" id="cm"><span>Đã có hai mã kết quả? So sánh ngay</span></button>';
+document.getElementById("go").onclick=function(){S.n=[document.getElementById("n0").value.trim(),""];S.a=[[],[]];S.p=0;S.i=0;S.v="play";render()};
+document.getElementById("cm").onclick=function(){S.v="cmp";render()}
+}
+function free(){
+app.innerHTML='<div class="mu">Câu cuối</div><div class="card"><span class="tag">Tự điền</span><div style="font-weight:600;margin-bottom:6px">Điều bạn lo lắng nhất về hôn nhân, hoặc muốn nói với người kia mà chưa dám nói, là gì?</div><textarea id="ft" rows="5" maxlength="500" style="width:100%;padding:12px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit"></textarea></div><button class="btn" id="fd">Xong</button>';
+document.getElementById("fd").onclick=function(){S.own={n:S.n[0],a:S.a[0],t:document.getElementById("ft").value.trim()};S.v="done";render()}
+}
+function done(){
+var code=enc(S.own);
+app.innerHTML='<h1>Xong rồi!</h1><div class="card"><b>Mã kết quả của bạn</b><p class="mu">Sao chép và gửi cho người kia qua Zalo, Messenger... Mã chứa cả câu trả lời của bạn nên chỉ gửi cho người đó.</p>'+ta("c1",1)+'<button class="btn" id="cp" style="margin-top:10px">Sao chép mã</button><button class="opt" id="mine" style="margin-top:10px"><span>Xem lại câu trả lời của mình</span></button></div><div class="card"><b>Mã của người kia</b><p class="mu">Khi nhận được mã của họ, dán vào đây để xem kết quả so sánh.</p>'+ta("c2")+'<div id="er" class="diff" style="margin:8px 0"></div><button class="btn" id="cb">So sánh</button></div>';
+var c1=document.getElementById("c1");c1.value=code;document.getElementById("mine").onclick=function(){mine(S.own)};
+document.getElementById("cp").onclick=function(){var b=this;c1.select();try{navigator.clipboard.writeText(code).catch(function(){document.execCommand("copy")})}catch(e){document.execCommand("copy")}b.textContent="Đã sao chép"};
+document.getElementById("cb").onclick=function(){var o=dec(document.getElementById("c2").value);if(!o){document.getElementById("er").textContent="Mã chưa đúng, kiểm tra lại nhé.";return}res(S.own,o)}
+}
+function cmp(){
+app.innerHTML='<h1>So sánh hai mã</h1><div class="card"><b>Mã thứ nhất</b>'+ta("c1")+'<b style="display:block;margin-top:10px">Mã thứ hai</b>'+ta("c2")+'<div id="er" class="diff" style="margin:8px 0"></div><button class="btn" id="cb">So sánh</button></div><button class="opt" id="bk"><span>Quay lại</span></button>';
+document.getElementById("bk").onclick=function(){S.v="intro";render()};
+document.getElementById("cb").onclick=function(){var x=dec(document.getElementById("c1").value),y=dec(document.getElementById("c2").value);if(x&&!document.getElementById("c2").value.trim()){mine(x);return}if(!x||!y){document.getElementById("er").textContent="Có mã chưa đúng, kiểm tra lại nhé.";return}res(x,y)}
+}
+function res(X,Y){
+var n0=X.n||"Người 1",n1=Y.n||"Người 2",same=0,d="",s="";
+Q.forEach(function(q,i){
+var x=X.a[i],y=Y.a[i];
+if(x===y){same++;s+='<div class="row"><span class="mu">'+q[0]+'</span> · '+q[1]+'<br><span class="same">Giống nhau: </span>'+lab(x,q)+'</div>'}
+else{d+='<div class="row"><span class="mu">'+q[0]+'</span> · '+q[1]+'<br>'+esc(n0)+': '+lab(x,q)+'<br>'+esc(n1)+': '+lab(y,q)+'</div>'}
+});
+var pct=Math.round(same/Q.length*100),em='<span class="mu">(để trống)</span>';
+window.scrollTo(0,0);
+app.innerHTML='<h1>Kết quả</h1><div class="card"><div class="big">'+pct+'%</div><p class="mu" style="text-align:center">Giống nhau '+same+'/'+Q.length+' câu</p><p>Khác nhau không có nghĩa là không hợp. Đó là những chỗ cần ngồi xuống nói chuyện thật kỹ, hỏi nhau vì sao mình chọn vậy. Câu nào cả hai chọn "cần bàn" (đáp án D) cũng nên bàn.</p></div>'
++(d?'<h3 class="diff">Cần nói chuyện ('+(Q.length-same)+')</h3><div class="card">'+d+'</div>':'')
++(s?'<h3 class="same">Giống nhau ('+same+')</h3><div class="card">'+s+'</div>':'')
++'<h3>Câu tự điền</h3><div class="card" style="white-space:pre-wrap"><b>'+esc(n0)+':</b>\n'+(esc(X.t||"")||em)+'\n\n<b>'+esc(n1)+':</b>\n'+(esc(Y.t||"")||em)+'</div><button class="btn" id="rs">Chơi lại</button>';
+document.getElementById("rs").onclick=function(){S={n:["",""],a:[[],[]],p:0,i:0,v:"intro"};render()}
+}
+function render(){window.scrollTo(0,0);var v=S.v;if(v=="intro")intro();else if(v=="play")play();else if(v=="free")free();else if(v=="done")done();else cmp()}
+function lab(v,q){return typeof v=="number"?'<b>'+L[v]+'</b>. '+q[2][v]:'<b>Tự viết:</b> '+esc(v)}
+function play(){
+var q=Q[S.i],pc=Math.round(S.i/Q.length*100);
+var h='<div class="mu">Câu '+(S.i+1)+'/'+Q.length+'</div><div class="bar"><i style="width:'+pc+'%"></i></div><div class="card"><span class="tag">'+q[0]+'</span><div style="font-weight:600;margin-bottom:6px">'+q[1]+'</div>';
+q[2].forEach(function(t,k){h+='<button class="opt" data-k="'+k+'"><b>'+L[k]+'</b><span>'+t+'</span></button>'});
+h+='<div class="mu" style="margin-top:14px">Hoặc tự viết câu trả lời của bạn:</div><textarea id="cu" rows="2" maxlength="200" placeholder="Gõ ý của bạn ở đây" style="width:100%;padding:12px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit;margin:6px 0 10px"></textarea><button class="btn" id="cb2">Dùng câu trả lời này</button></div>';
+app.innerHTML=h;
+function nx(v){S.a[0][S.i]=v;S.i++;if(S.i>=Q.length)S.v="free";render()}
+Array.prototype.forEach.call(app.querySelectorAll(".opt"),function(b){b.onclick=function(){nx(+b.getAttribute("data-k"))}});
+document.getElementById("cb2").onclick=function(){var el=document.getElementById("cu"),t=el.value.trim();if(!t){el.focus();return}nx(t)}
+}
+function mine(X){
+window.scrollTo(0,0);
+var h='<h1>Câu trả lời của '+esc(X.n||"bạn")+'</h1><div class="card">';
+Q.forEach(function(q,i){h+='<div class="row"><span class="mu">'+q[0]+'</span> · '+q[1]+'<br>'+lab(X.a[i],q)+'</div>'});
+h+='</div><h3>Câu tự điền</h3><div class="card" style="white-space:pre-wrap">'+(esc(X.t||"")||'<span class="mu">(để trống)</span>')+'</div><button class="btn" id="bk">Quay lại</button>';
+app.innerHTML=h;
+document.getElementById("bk").onclick=function(){S.v=S.own?"done":"cmp";render()}
+}
+render();
+</script>
+</body>
+</html>
